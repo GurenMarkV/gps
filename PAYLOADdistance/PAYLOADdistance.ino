@@ -25,7 +25,7 @@ float frequency = 915.0; // Change the frequency here.
 struct dataStruct{
   float dist;
   unsigned long counter;
-  float rssi;
+  float rssiV;
 }SensorReadings;
 
  // RF communication, Dont put this on the stack:
@@ -54,7 +54,7 @@ void setup()
 
   SensorReadings.dist = 0;
   SensorReadings.counter = 0;
-  //SensorReadings.rssi = 0;
+  SensorReadings.rssiV = 0;
   
 } // Setup
 
@@ -65,12 +65,12 @@ void setup()
 void loop()
 {
   float dist;
-  float rssi;
+  float rssiV;
   DEBUG_PORT.println("------------------------------------");
   DEBUG_PORT.println("Sending to base"); 
   distance(); //Read temp sensor
   delay(1000);
-  radio();  //Read RSSI value
+  rssi();  //Read RSSI value
   delay(1000);
   SendValues(); //Send sensor values
   delay(2000);
@@ -106,25 +106,21 @@ void loop()
 //Get Distance from GPS sensor
 void distance()
 {
-  float range;
-  while (gps.available( gpsPort )) {
-    gps_fix fix = gps.read(); // save the latest
+  gps.available( gpsPort );
+  gps_fix fix = gps.read(); // save the latest
 
-    // When we have a location, calculate how far away we are from the base location.
-    if (fix.valid.location) {
-      range = fix.location.DistanceMiles( base );
+  // When we have a location, calculate how far away we are from the base location.
 
-      DEBUG_PORT.print( F("Range: ") );
-      DEBUG_PORT.print( range );
-      DEBUG_PORT.println( F(" Miles") );
-    } else
-      // Waiting...
-      DEBUG_PORT.print( '.' );
-  }
-    SensorReadings.dist = range;
+  float range = fix.location.DistanceMiles( base );
+
+  DEBUG_PORT.print( F("Range: ") );
+  DEBUG_PORT.print( range );
+  DEBUG_PORT.println( F(" Miles") );
+  SensorReadings.dist = range;
+
 } //  Distance
 
-void radio()
+void rssi()
 {
     DEBUG_PORT.print("RSSI: ");
     DEBUG_PORT.println(rf95.lastRssi(), DEC);
@@ -142,12 +138,12 @@ void SendValues()
 
  
   DEBUG_PORT.println("Sending to Base");
-//  int i = 0;
-//  int repeat = 10; //Times to repeat same message
-//   
-//  // Send a message to manager_server
-//  while (gps.available( gpsPort ))
-//  {
+  int i = 0;
+  int repeat = 1; //Times to repeat same message
+   
+  // Send a message to manager_server
+  while (i<repeat)
+  {
     if (manager.sendto(buf, zize, SERVER_ADDRESS))
     {
       DEBUG_PORT.println("Message sent");   
@@ -157,8 +153,8 @@ void SendValues()
       DEBUG_PORT.println("sendto failed");
     }
     delay(100);
-//    i = i+1;
-//  }
+    i = i+1;
+  }
   SensorReadings.counter = SensorReadings.counter + 1;
 }
 
