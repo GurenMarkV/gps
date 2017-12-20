@@ -24,7 +24,6 @@ float frequency = 915.0; // Change the frequency here.
 
 struct dataStruct{
   float dist;
-  float rssiV;
   unsigned long counter;
 }SensorReadings;
 
@@ -42,7 +41,7 @@ DEBUG_PORT.println("LoRa init failed");
 // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
 rf95.setFrequency(frequency);
 
-rf95.setTxPower(20, false);
+rf95.setTxPower(13, false);
 
 rf95.setCADTimeout(10000);
 //DEBUG_PORT.println("Waiting for radio to setup");
@@ -52,8 +51,7 @@ rf95.setCADTimeout(10000);
 //DEBUG_PORT.println( F("Looking for GPS device on " GPS_PORT_NAME) );
 //gpsPort.begin(9600);
 
-SensorReadings.dist = 0;
-SensorReadings.rssiV = 0;
+//SensorReadings.dist = 0;
 SensorReadings.counter = 0;
 }
 
@@ -109,9 +107,6 @@ void ReciveFromSensors()
        
       DEBUG_PORT.print("Distance: ");
       DEBUG_PORT.println(SensorReadings.dist);
-
-      DEBUG_PORT.print("RSSI: ");
-      DEBUG_PORT.println(SensorReadings.rssiV);
 
       DEBUG_PORT.println("--------------------------------------------");
     }

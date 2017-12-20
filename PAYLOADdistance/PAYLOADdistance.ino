@@ -25,7 +25,6 @@ float frequency = 915.0; // Change the frequency here.
 struct dataStruct{
   float dist;
   unsigned long counter;
-  float rssiV;
 }SensorReadings;
 
  // RF communication, Dont put this on the stack:
@@ -42,7 +41,7 @@ void setup()
   // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
   rf95.setFrequency(frequency);
 
-  rf95.setTxPower(20, false);
+  rf95.setTxPower(13, false);
   
   rf95.setCADTimeout(10000);
   DEBUG_PORT.println("Waiting for radio to setup");
@@ -52,9 +51,9 @@ void setup()
   DEBUG_PORT.println( F("Looking for GPS device on " GPS_PORT_NAME) );
   gpsPort.begin(9600);
 
-  SensorReadings.dist = 0;
+//  SensorReadings.dist = 0;
   SensorReadings.counter = 0;
-  SensorReadings.rssiV = 0;
+
   
 } // Setup
 
@@ -70,8 +69,7 @@ void loop()
   DEBUG_PORT.println("Sending to base"); 
   distance(); //Read temp sensor
   delay(1000);
-  rssi();  //Read RSSI value
-  delay(1000);
+
   SendValues(); //Send sensor values
   delay(2000);
   DEBUG_PORT.println("------------------------------------");
@@ -106,26 +104,25 @@ void loop()
 //Get Distance from GPS sensor
 void distance()
 {
-  gps.available( gpsPort );
-  gps_fix fix = gps.read(); // save the latest
+  //float rangeV = fix.location.DistanceMiles( base );
+  if (gps.available( gpsPort )) {
+    gps_fix fix = gps.read(); // save the latest
 
-  // When we have a location, calculate how far away we are from the base location.
+    // When we have a location, calculate how far away we are from the base location.
+    if (fix.valid.location) {
+      float range = fix.location.DistanceMiles( base );
 
-  float range = fix.location.DistanceMiles( base );
+      DEBUG_PORT.print( F("Range: ") );
+      DEBUG_PORT.print( range );
+      DEBUG_PORT.println( F(" Miles") );
+      SensorReadings.dist = range;
+    } 
+  }
 
-  DEBUG_PORT.print( F("Range: ") );
-  DEBUG_PORT.print( range );
-  DEBUG_PORT.println( F(" Miles") );
-  SensorReadings.dist = range;
+  //SensorReadings.dist = rangeV;
 
 } //  Distance
 
-void rssi()
-{
-    DEBUG_PORT.print("RSSI: ");
-    DEBUG_PORT.println(rf95.lastRssi(), DEC);
-    SensorReadings.dist = rf95.lastRssi();
-}
 
 //RF communication
 void SendValues()
