@@ -25,6 +25,9 @@ struct dataStruct{
   float latitudeDegrees, longitudeDegrees;
   float geoidheight, altitude;
   float speed, angle, magvariation, HDOP;
+  float latitude, longitude;
+  int32_t latitude_fixed, longitude_fixed;
+  char lat, lon;
   unsigned long counter;
    
 }SensorReadings;
@@ -64,6 +67,12 @@ void setup()
   SensorReadings.angle = 0;
   SensorReadings.magvariation = 0;
   SensorReadings.HDOP = 0;
+  SensorReadings.latitude = 0;
+  SensorReadings.longitude = 0;
+  SensorReadings.latitude_fixed = 0;
+  SensorReadings.longitude_fixed = 0;
+  SensorReadings.lat = 0;
+  SensorReadings.lon = 0;
   SensorReadings.counter = 0;
 }
 
@@ -125,27 +134,27 @@ void date()
   if (millis() - timer > 2000) { 
     timer = millis(); // reset the timer
     
-    Serial.print("\nTime: ");
+    Serial.print(F("\nTime: "));
     Serial.print(GPS.hour, DEC); Serial.print(':');
     Serial.print(GPS.minute, DEC); Serial.print(':');
     Serial.print(GPS.seconds, DEC); Serial.print('.');
     Serial.println(GPS.milliseconds);
-    Serial.print("Date: ");
+    Serial.print(F("Date: "));
     Serial.print(GPS.day, DEC); Serial.print('/');
-    Serial.print(GPS.month, DEC); Serial.print("/20");
+    Serial.print(GPS.month, DEC); Serial.print(F("/20"));
     Serial.println(GPS.year, DEC);
-    Serial.print("Fix: "); Serial.print((int)GPS.fix);
-    Serial.print(" quality: "); Serial.println((int)GPS.fixquality); 
+    Serial.print(F("Fix: ")); Serial.print((int)GPS.fix);
+    Serial.print(F(" quality: ")); Serial.println((int)GPS.fixquality); 
     if (GPS.fix) {
-      Serial.print("Location: ");
+      Serial.print(F("Location: "));
       Serial.print(GPS.latitudeDegrees, 4);
       Serial.print(", "); 
       Serial.println(GPS.longitudeDegrees, 4);
       
-      Serial.print("Speed (knots): "); Serial.println(GPS.speed);
-      Serial.print("Angle: "); Serial.println(GPS.angle);
-      Serial.print("Altitude: "); Serial.println(GPS.altitude);
-      Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
+      Serial.print(F("Speed (knots): ")); Serial.println(GPS.speed);
+      Serial.print(F("Angle: ")); Serial.println(GPS.angle);
+      Serial.print(F("Altitude: ")); Serial.println(GPS.altitude);
+      Serial.print(F("Satellites: ")); Serial.println((int)GPS.satellites);
     }
   }
 
@@ -165,6 +174,12 @@ void date()
   SensorReadings.angle = GPS.angle;
   SensorReadings.magvariation = GPS.magvariation;
   SensorReadings.HDOP = GPS.HDOP;
+  SensorReadings.latitude = GPS.latitude;
+  SensorReadings.longitude = GPS.longitude;
+  SensorReadings.latitude_fixed = GPS.latitude_fixed;
+  SensorReadings.longitude_fixed = GPS.longitude_fixed;
+  SensorReadings.lat = GPS.Lat;
+  SensorReadings.lon = GPS.lon;
 }
 
 //RF communication

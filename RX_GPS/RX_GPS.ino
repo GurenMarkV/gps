@@ -18,6 +18,9 @@ struct dataStruct{
   float latitudeDegrees, longitudeDegrees;
   float geoidheight, altitude;
   float speed, angle, magvariation, HDOP;
+  float latitude, longitude;
+  int32_t latitude_fixed, longitude_fixed;
+  char lat, lon;
   unsigned long counter;
    
 }SensorReadings;
@@ -43,6 +46,12 @@ void setup()
   SensorReadings.angle = 0;
   SensorReadings.magvariation = 0;
   SensorReadings.HDOP = 0;
+  SensorReadings.latitude = 0;
+  SensorReadings.longitude = 0;
+  SensorReadings.latitude_fixed = 0;
+  SensorReadings.longitude_fixed = 0;
+  SensorReadings.lat = 0;
+  SensorReadings.lon = 0;
   SensorReadings.counter = 0;
 }
 
@@ -92,6 +101,18 @@ void ReciveFromSensors()
       Serial.print("Angle: "); Serial.println(SensorReadings.angle);
       Serial.print("Altitude: "); Serial.println(SensorReadings.altitude);
       Serial.print("Satellites: "); Serial.println((int)SensorReadings.satellites);
+      
+      Serial.print(F("Here is all the other data the GPS provides"));
+      Serial.print("geoidheight: "); Serial.print(SensorReadings.geoidheight);
+      Serial.print("magvariation: "); Serial.println(SensorReadings.magvariation);
+      Serial.print("HDOP: "); Serial.println(SensorReadings.HDOP);
+      Serial.print("latitude: "); Serial.print(SensorReadings.latitude);
+      Serial.print("longitude: "); Serial.println(SensorReadings.longitude);
+      Serial.print("latitude_fixed: "); Serial.println(SensorReadings.latitude_fixed);
+      Serial.print("longitude_fixed: "); Serial.print(SensorReadings.longitude_fixed);
+      Serial.print("lat: "); Serial.println(SensorReadings.lat);
+      Serial.print("lon: "); Serial.println(SensorReadings.lon);
+            
       delay(2000);
       Serial.println("--------------------------------------------");
     }
