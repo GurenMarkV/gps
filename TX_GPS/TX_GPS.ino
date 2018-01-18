@@ -37,7 +37,6 @@ struct dataStruct{
 
 void setup()
 {
-  //Serial.begin(9600);
   Serial.begin(115200);
   Serial.println("Adafruit GPS library basic test!");
   GPS.begin(9600);
@@ -47,10 +46,19 @@ void setup()
   useInterrupt(true);
   delay(1000);
   mySerial.println(PMTK_Q_RELEASE);
+
   //RF communication
   if (!manager.init())
     Serial.println("init failed");
 
+  rf95.setFrequency(868);
+  rf95.setSignalBandwidth(125000);
+  rf95.setCodingRate4(8);
+  rf95.setSpreadingFactor(12); 
+  //rf95.setModemConfig(RH_RF95::Bw31_25Cr48Sf512);  //set for pre-configured long range
+  rf95.setTxPower(20,false);
+  Serial.println(RH_RF95_OUTPUT_POWER);
+  rf95.printRegisters();
   SensorReadings.hour = 0;
   SensorReadings.minute = 0;
   SensorReadings.seconds = 0;
