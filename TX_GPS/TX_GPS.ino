@@ -52,10 +52,11 @@ void setup()
     Serial.println("init failed");
 
   driver.setFrequency(868);
-  driver.setSignalBandwidth(125000);
-  driver.setCodingRate4(8);
-  driver.setSpreadingFactor(12); 
+  //driver.setSignalBandwidth(125000);
+  //driver.setCodingRate4(8);
+  //driver.setSpreadingFactor(12); 
   //driver.setModemConfig(RH_RF95::Bw31_25Cr48Sf512);  //set for pre-configured long range
+  driver.setModemConfig(RH_RF95::Bw125Cr48Sf4096);  //set for pre-configured long range
   driver.setTxPower(20,false);
   Serial.println(RH_RF95_OUTPUT_POWER);
   driver.printRegisters();
@@ -187,7 +188,7 @@ void date()
   SensorReadings.longitude = GPS.longitude;
   SensorReadings.latitude_fixed = GPS.latitude_fixed;
   SensorReadings.longitude_fixed = GPS.longitude_fixed;
-  SensorReadings.lat = GPS.Lat;
+  SensorReadings.lat = GPS.lat;
   SensorReadings.lon = GPS.lon;
 }
 
