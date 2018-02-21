@@ -31,15 +31,15 @@ void setup()
   if (!manager.init())
     Serial.println("init failed");
 
-  driver.setFrequency(868);
+  //driver.setFrequency(868);
   //driver.setSignalBandwidth(125000);
   //driver.setCodingRate4(8);
   //driver.setSpreadingFactor(12); 
   //driver.setModemConfig(RH_RF95::Bw31_25Cr48Sf512);  //set for pre-configured long range
   driver.setModemConfig(RH_RF95::Bw125Cr48Sf4096);  //set for pre-configured long range
-  driver.setTxPower(20,false);
-  Serial.println(RH_RF95_OUTPUT_POWER);
-  driver.printRegisters();
+  driver.setTxPower(23,false);
+  //Serial.println(RH_RF95_OUTPUT_POWER);
+  //driver.printRegisters();
   
   SensorReadings.hour = 0;
   SensorReadings.minute = 0;
@@ -103,25 +103,28 @@ void ReciveFromSensors()
       Serial.print("Fix: "); Serial.print((int)SensorReadings.fix);
       Serial.print(" quality: "); Serial.println((int)SensorReadings.fixquality); 
       Serial.print("Location: ");
+      Serial.print(SensorReadings.latitude_fixed, 9);
+      Serial.print(SensorReadings.lat);
+      Serial.print(", "); 
+      Serial.print(SensorReadings.longitude_fixed, 9);
+      Serial.println(SensorReadings.lon);
+      
+      Serial.print(F("Location: "));
       Serial.print(SensorReadings.latitudeDegrees, 4);
       Serial.print(", "); 
       Serial.println(SensorReadings.longitudeDegrees, 4);
-      
+
       Serial.print("Speed (knots): "); Serial.println(SensorReadings.speed);
       Serial.print("Angle: "); Serial.println(SensorReadings.angle);
       Serial.print("Altitude: "); Serial.println(SensorReadings.altitude);
       Serial.print("Satellites: "); Serial.println((int)SensorReadings.satellites);
       
-      Serial.print(F("Here is all the other data the GPS provides"));
-      Serial.print("geoidheight: "); Serial.print(SensorReadings.geoidheight);
+      Serial.println(F("Here is all the other data the GPS provides"));
+      Serial.print("geoidheight: "); Serial.println(SensorReadings.geoidheight);
       Serial.print("magvariation: "); Serial.println(SensorReadings.magvariation);
       Serial.print("HDOP: "); Serial.println(SensorReadings.HDOP);
-      Serial.print("latitude: "); Serial.print(SensorReadings.latitude);
+      Serial.print("latitude: "); Serial.println(SensorReadings.latitude);
       Serial.print("longitude: "); Serial.println(SensorReadings.longitude);
-      Serial.print("latitude_fixed: "); Serial.println(SensorReadings.latitude_fixed);
-      Serial.print("longitude_fixed: "); Serial.print(SensorReadings.longitude_fixed);
-      Serial.print("lat: "); Serial.println(SensorReadings.lat);
-      Serial.print("lon: "); Serial.println(SensorReadings.lon);
             
       delay(2000);
       Serial.println("--------------------------------------------");

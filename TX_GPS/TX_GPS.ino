@@ -3,13 +3,16 @@
 #include <SPI.h>
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
+
+
 SoftwareSerial mySerial(8, 7);
 Adafruit_GPS GPS(&mySerial);
+
 #define GPSECHO  false
 boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 
-//RH communication
+// RH communication
 #define CLIENT_ADDRESS 1
 #define SERVER_ADDRESS 2
 // Singleton instance of the radio driver
@@ -51,16 +54,22 @@ void setup()
   if (!manager.init())
     Serial.println("init failed");
 
-  driver.setFrequency(868);
+  //driver.setFrequency(868);
   //driver.setSignalBandwidth(125000);
   //driver.setCodingRate4(8);
   //driver.setSpreadingFactor(12); 
-  //driver.setModemConfig(RH_RF95::Bw31_25Cr48Sf512);  //set for pre-configured long range
-  driver.setModemConfig(RH_RF95::Bw125Cr48Sf4096);  //set for pre-configured long range
-  driver.setTxPower(20,false);
-  Serial.println(RH_RF95_OUTPUT_POWER);
-  driver.printRegisters();
+  driver.setModemConfig(RH_RF95::Bw31_25Cr48Sf512);  //set for pre-configured long range
+  //driver.setModemConfig(RH_RF95::Bw125Cr48Sf4096);  //set for pre-configured long range
+  driver.setTxPower(23,false);
+  //Serial.println(RH_RF95_OUTPUT_POWER);
+  //driver.printRegisters();
   
+  sensors_init();
+}
+
+
+void sensors_init()
+{
   SensorReadings.hour = 0;
   SensorReadings.minute = 0;
   SensorReadings.seconds = 0;
@@ -81,10 +90,15 @@ void setup()
   SensorReadings.longitude = 0;
   SensorReadings.latitude_fixed = 0;
   SensorReadings.longitude_fixed = 0;
+  SensorReadings.latitudeDegrees = 0;
+  SensorReadings.longitudeDegrees = 0;
   SensorReadings.lat = 0;
   SensorReadings.lon = 0;
   SensorReadings.counter = 0;
+
 }
+
+
 
 SIGNAL(TIMER0_COMPA_vect) {
   char c = GPS.read();
@@ -110,10 +124,8 @@ void loop()
 {
   Serial.println("------------------------------------");
   Serial.println("Sending to RX");
-  float tempValue;
-  int soilValue;
  
-  date(); //Read date and time
+  data(); //Read date and time
   delay(1000);
 
   SendValues(); //Send sensor values
@@ -123,7 +135,7 @@ void loop()
 
 uint32_t timer = millis();
 //Get temperatures from Dallas sensor
-void date()
+void data()
 {
  if (! usingInterrupt) {
     char c = GPS.read();
@@ -190,6 +202,8 @@ void date()
   SensorReadings.longitude_fixed = GPS.longitude_fixed;
   SensorReadings.lat = GPS.lat;
   SensorReadings.lon = GPS.lon;
+  SensorReadings.latitudeDegrees = GPS.latitudeDegrees;
+  SensorReadings.longitudeDegrees = GPS.longitudeDegrees;
 }
 
 //RF communication
