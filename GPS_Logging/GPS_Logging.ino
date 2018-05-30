@@ -1,8 +1,9 @@
 
 /**************************************************************************/
 /*
-    GPS_Logging.ino V0.0.6
+    GPS_Logging.ino V0.0.7
     Test code for Adafruit GPS modules using MTK3329/MTK3339 driver
+    With Voltage measuring
 
     This code shows how to listen to the GPS module in an interrupt
     which allows the program to have more 'freedom' - just parse
@@ -12,9 +13,9 @@
     Christian Patalas
     Daksh Patel
     Talha Abdulaziz
-    Walter Tchouku
+    Walter Tchoukou 
 
-    Mar 19 2018
+    May 30 2018
 
     https://github.com/uwinrockets
 
@@ -51,6 +52,13 @@ NeoTee tee( outputs, sizeof(outputs)/sizeof(outputs[0]) );
 boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 
+
+float analogValue1;
+float analogValue2;
+float analogValue3;
+float input_voltage1;
+float input_voltage2;
+float input_voltage3;
 
 /**************************************************************************/
 /*
@@ -117,7 +125,7 @@ void setup()
   }
   
   // Create/Open file 
-  myFile = SD.open("GPS2.csv", FILE_WRITE); //**************************************************************************************************************************************
+  myFile = SD.open("GPSLog.csv", FILE_WRITE); //**************************************************************************************************************************************
   
   // if the file opened okay, write to it:
   // if (myFile) {
@@ -131,6 +139,10 @@ void setup()
   // else {
   //   Serial.println(F("error opening test.txt"));
   // }
+
+  pinMode(A3,INPUT);
+  pinMode(A4,INPUT);
+  pinMode(A5,INPUT);
 }
 
 
@@ -169,6 +181,10 @@ void useInterrupt(boolean v) {
 uint32_t timer = millis();
 void loop()                     // run over and over again
 {
+  analogValue1 = analogRead (A3);
+  analogValue2 = analogRead (A4);
+  analogValue3 = analogRead (A5);
+
   // in case you are not using the interrupt above, you'll
   // need to 'hand query' the GPS, not suggested :(
   if (! usingInterrupt) {
@@ -232,6 +248,19 @@ void loop()                     // run over and over again
 
     //Satellites
     outputToSD((int)GPS.satellites);
+
+    //  Conversion formula for voltage
+    tee.print(analogValue1);
+    tee.print(analogValue2);
+    tee.print(analogValue3);
+
+    input_voltage1 = (analogValue1 * 5.0) / 1024.0;
+    input_voltage2 = (analogValue2 * 5.0) / 1024.0;
+    input_voltage3 = (analogValue3 * 5.0) / 1024.0;
+
+    tee.print(input_voltage1);
+    tee.print(input_voltage2);
+    tee.print(input_voltage3);
 
     tee.println();
     myFile.flush();
