@@ -232,6 +232,7 @@ void loop()                     // run over and over again
     tee.print(",");
     tee.print(GPS.longitude, 4); 
     tee.print(",");
+    //More GPS Lat and Long
     tee.print(GPS.latitudeDegrees, 4);   
     tee.print(",");
     tee.print(GPS.longitudeDegrees, 4); 
@@ -250,17 +251,17 @@ void loop()                     // run over and over again
     outputToSD((int)GPS.satellites);
 
     //  Conversion formula for voltage
-    tee.print(analogValue1);
-    tee.print(analogValue2);
-    tee.print(analogValue3);
+    outputToSD(analogValue1);
+    outputToSD(analogValue2);
+    outputToSD(analogValue3);
 
     input_voltage1 = (analogValue1 * 5.0) / 1024.0;
     input_voltage2 = (analogValue2 * 5.0) / 1024.0;
     input_voltage3 = (analogValue3 * 5.0) / 1024.0;
 
-    tee.print(input_voltage1);
-    tee.print(input_voltage2);
-    tee.print(input_voltage3);
+    outputToSD(input_voltage1);
+    outputToSD(input_voltage2);
+    outputToSD(input_voltage3);
 
     tee.println();
     myFile.flush();
